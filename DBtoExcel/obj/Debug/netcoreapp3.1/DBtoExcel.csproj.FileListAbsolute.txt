@@ -46,3 +46,4 @@ C:\Users\v-vyin\source\repos\DBtoExcel\DBtoExcel\obj\Debug\netcoreapp3.1\DBtoExc
 C:\Users\v-vyin\source\repos\DBtoExcel\DBtoExcel\obj\Debug\netcoreapp3.1\DBtoExcel.pdb
 C:\Users\v-vyin\source\repos\DBtoExcel\DBtoExcel\obj\Debug\netcoreapp3.1\DBtoExcel.genruntimeconfig.cache
 C:\Users\v-vyin\source\repos\DBtoExcel\DBtoExcel\bin\Debug\netcoreapp3.1\appsetting.json
+C:\Users\v-vyin\source\repos\DBtoExcel\DBtoExcel\bin\Debug\netcoreapp3.1\emailsetting.json

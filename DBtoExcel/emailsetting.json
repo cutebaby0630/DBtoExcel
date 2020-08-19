@@ -1,0 +1,13 @@
+{
+  "ConnectionStrings": {
+    "FromAddressMail": "lovemath0630@gmail.com",
+    "FromAddressMailPassword": "koormyktfbbacpmj",
+    "SMTPHost": "smtp.gmail.com",
+    "SMTPPort": 587,
+    "SMTPEnableSsl": true,
+    "UseDefaultCredentials": true
+  },
+  "SystemName": "MigrationDocuments"
+
+
+}

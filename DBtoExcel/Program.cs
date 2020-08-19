@@ -14,6 +14,7 @@ using System.ComponentModel;
 using LicenseContext = OfficeOpenXml.LicenseContext;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations;
+using ServiceStack;
 
 namespace DBtoExcel
 {
@@ -136,8 +137,13 @@ namespace DBtoExcel
                 File.WriteAllBytes(@"C:\Users\v-vyin\SchedulerDB_ExcelFile\" + excelname, bin);
 
             }
-
-            var helper = new SMTPHelper("lovemath0630@gmail.com", "koormyktfbbacpmj", "smtp.gmail.com", 587, true, true); //寄出信email
+            IConfiguration config_email = new ConfigurationBuilder().AddJsonFile("emailsetting.json", optional: true, reloadOnChange: true).Build();
+            var helper = new SMTPHelper(config_email.GetConnectionString("FromAddressMail"),
+                                        config_email.GetConnectionString("FromAddressMailPassword"),
+                                        config_email.GetConnectionString("SMTPHost"),
+                                        int.Parse(config_email.GetConnectionString("SMTPPort")),
+                                        bool.Parse(config_email.GetConnectionString("SMTPEnableSsl")),
+                                        bool.Parse(config_email.GetConnectionString("UseDefaultCredentials"))); //寄出信email
             string subject = $"有關收標與子檔無法對應項目"; //信件主旨
             string body = $"Hi All, \r\n\r\n無法對應的項目如附件，\r\n\r\n再麻煩查收，感謝\r\n\r\n Best Regards, \r\n\r\n Vicky Yin";//信件內容
             string attachments = null;//附件
@@ -146,8 +152,10 @@ namespace DBtoExcel
             {
                 attachments = fileName.ToString();
             }
-            string toMailList = "Leon.Yen@microsoft.com;Sol.Lee@microsoft.com";//收件者
-            string ccMailList = "NickyXu@dualred.onmicrosoft.com;v-vyin@microsoft.com";//CC收件者
+            //string toMailList = "Leon.Yen@microsoft.com;Sol.Lee@microsoft.com";//收件者
+            //string ccMailList = "NickyXu@dualred.onmicrosoft.com;v-vyin@microsoft.com";//CC收件者
+            string toMailList = "v-vyin@microsoft.com";//收件者
+            string ccMailList = "";//CC收件者
 
             helper.SendMail(toMailList, ccMailList, null, subject, body, attachments);
         }
