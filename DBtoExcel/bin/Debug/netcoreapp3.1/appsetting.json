@@ -2,6 +2,18 @@
   "ConnectionStrings": {
     "DefaultConnection": "Data Source=10.1.222.182;Initial Catalog={0};Integrated Security=False;User ID={1};Password={2};Pooling=True;MultipleActiveResultSets=True;Connect Timeout=120;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite"
   },
+  "TargetTable": {
+    "toMail": "Leon.Yen@microsoft.com;Sol.Lee@microsoft.com",
+    "ccMail": "NickyXu@dualred.onmicrosoft.com;v-vyin@microsoft.com;A014958@ms.skh.org.tw;M012363@skh.org.tw;chungho@outlook.com;r000097@ms.skh.org.tw;MarkSun@dualred.onmicrosoft.com;LisaChang@dualred.onmicrosoft.com"
+  },
+  "SendEmail": {
+    "FromAddressMail": "SKDBA@ms.skh.org.tw",
+    "FromAddressMailPassword": "",
+    "SMTPHost": "exchange2010.skh.org.tw",
+    "SMTPPort": 25,
+    "SMTPEnableSsl": false,
+    "UseDefaultCredentials": false
+  },
   "SystemName": "MigrationDocuments"
 
 }

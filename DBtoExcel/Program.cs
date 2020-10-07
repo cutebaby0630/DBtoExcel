@@ -84,7 +84,7 @@ namespace DBtoExcel
             List<DBdata> migrationTableInfoList = sqlHelper.QueryAsync<DBdata>(sql).Result?.ToList();
             DataTable dt = sqlHelper.FillTableAsync(sql).Result;
 
-            var excelname = new FileInfo(DateTime.Now.ToString("yyyyMMddhhmm") + ".xlsx");
+            /*var excelname = new FileInfo(DateTime.Now.ToString("yyyyMMddhhmm") + ".xlsx");
             //ExcelPackage.LicenseContext = LicenseContext.Commercial;
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using (var excel = new ExcelPackage(excelname))
@@ -136,28 +136,29 @@ namespace DBtoExcel
                 Byte[] bin = excel.GetAsByteArray();
                 File.WriteAllBytes(@"C:\Users\v-vyin\SchedulerDB_ExcelFile\" + excelname, bin);
 
-            }
-            IConfiguration config_email = new ConfigurationBuilder().AddJsonFile("emailsetting.json", optional: true, reloadOnChange: true).Build();
-            var helper = new SMTPHelper(config_email.GetConnectionString("FromAddressMail"),
-                                        config_email.GetConnectionString("FromAddressMailPassword"),
-                                        config_email.GetConnectionString("SMTPHost"),
-                                        int.Parse(config_email.GetConnectionString("SMTPPort")),
-                                        bool.Parse(config_email.GetConnectionString("SMTPEnableSsl")),
-                                        bool.Parse(config_email.GetConnectionString("UseDefaultCredentials"))); //寄出信email
+            }*/
+            DatatableToHTML datatableToHTML = new DatatableToHTML();
+
+            var helper = new SMTPHelper($"{config[$"SendEmail:FromAddressMail"]}",
+                                        $"{config[$"SendEmail:FromAddressMailPassword"]}",
+                                        $"{config[$"SendEmail:SMTPHost"]}",
+                                        int.Parse($"{config[$"SendEmail:SMTPPort"]}"),
+                                        bool.Parse($"{config[$"SendEmail:SMTPEnableSsl"]}"),
+                                        bool.Parse($"{config[$"SendEmail:UseDefaultCredentials"]}")); //寄出信email
             string subject = $"有關收標與子檔無法對應項目"; //信件主旨
-            string body = $"Hi All, \r\n\r\n無法對應的項目如附件，\r\n\r\n再麻煩查收，感謝\r\n\r\n Best Regards, \r\n\r\n Vicky Yin";//信件內容
+            string body = $"Hi All, \r\n\r\n無法對應的項目如下表，\r\n\r\n{datatableToHTML.ToHTML(dt)}\r\n\r\n Best Regards, \r\n\r\n Vicky Yin";//信件內容
             string attachments = null;//附件
-            var fileName = $@"C:\Users\v-vyin\SchedulerDB_ExcelFile\{excelname}";//附件位置
+           /* var fileName = $@"C:\Users\v-vyin\SchedulerDB_ExcelFile\{excelname}";//附件位置
             if (File.Exists(fileName.ToString()))
             {
                 attachments = fileName.ToString();
-            }
-            //string toMailList = "Leon.Yen@microsoft.com;Sol.Lee@microsoft.com";//收件者
-            //string ccMailList = "NickyXu@dualred.onmicrosoft.com;v-vyin@microsoft.com";//CC收件者
-            string toMailList = "v-vyin@microsoft.com";//收件者
-            string ccMailList = "";//CC收件者
+            }*/
+            //string toMailList = "v-vyin@microsoft.com";//收件者
+            //string ccMailList = "";//CC收件者
+            string toMailList = $"{config[$"TargetTable:toMail"]}";//收件者
+            string ccMailList = $"{config[$"TargetTable:ccMail"]}";//CC收件者
 
-            helper.SendMail(toMailList, ccMailList, null, subject, body, attachments);
+            helper.SendMail(toMailList, ccMailList, null, subject, body, null);
         }
         public class DBdata
         {
@@ -171,6 +172,37 @@ namespace DBtoExcel
             public string ItemCode { get; set; }
             public string ItemName { get; set; }
         }
+        #region -- DataTable to HTML--
+        class DatatableToHTML
+        {
+            public string ToHTML(DataTable dt)
+            {
+                try
+                {
+                    string html = "<table>";
+                    //add header row
+                    html += "<tr>";
+                    for (int i = 0; i < dt.Columns.Count; i++)
+                        html += "<td>" + dt.Columns[i].ColumnName + "</td>";
+                    html += "</tr>";
+                    //add rows
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        html += "<tr>";
+                        for (int j = 0; j < dt.Columns.Count; j++)
+                            html += "<td>" + dt.Rows[i][j].ToString() + "</td>";
+                        html += "</tr>";
+                    }
+                    html += "</table>";
 
+                    return html;
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+        }
+        #endregion
     }
 }
